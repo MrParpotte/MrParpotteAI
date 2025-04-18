@@ -11,3 +11,6 @@
     "sqlite3": "^5.1.7"
   }
 }
+"scripts": {
+  "start": "node index.js"
+}
