@@ -310,7 +310,7 @@ client.on('messageCreate', async message => {
       description: 'Voici la liste des commandes disponibles :',
       fields: [
         { name: '🎉 Communauté', value: '`?blague`, `?sondage`, `?motivation`, `?social`' },
-        { name: '🎮 Jeux & Mini-jeux', value: '`?roulette`, `?dé`, `?duel`, `?morpion`, `?devine`' },
+        { name: '🎮 Jeux & Mini-jeux', value: '`?roulette`, `?dé`, `?duel`, `?morpion`, `?devine`, `?8ball`' },
         { name: '📈 Classement', value: '`?top`, `?me`' },
         { name: '📺 YouTube', value: '`?vidéo`' },
         { name: '🧠 Utilitaire', value: '`?ping`' },
