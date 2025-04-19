@@ -244,25 +244,6 @@ client.on('interactionCreate', async interaction => {
     content: `C'est à ${playerTurn} de jouer.`,
     components: creeGrilleBoutons()
   });
-
-  if (interaction.commandName === 'help') {
-    await interaction.reply({
-      embeds: [
-        {
-          color: 0x0099ff,
-          title: "📖 Commandes disponibles",
-          description: [
-            "`/help` – Affiche ce message",
-            "`?8ball [question]` – Pose une question à la boule magique 🎱",
-            "`?morpion` – Joue au morpion contre le bot 🤖",
-            "`/ping` – Vérifie si le bot est vivant 🏓",
-            "`/info` – Obtiens des infos sur le bot 📡"
-          ].join('\n')
-        }
-      ]
-    });
-  }
-  
 });
 
 client.on('messageCreate', async message => {
