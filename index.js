@@ -7,7 +7,8 @@ const {
   ButtonStyle,
   EmbedBuilder,
   ActivityType,
-  SlashCommandBuilder
+  SlashCommandBuilder,
+  Collection
 } = require('discord.js');
 
 require('dotenv').config();
@@ -20,6 +21,8 @@ const client = new Client({
   ],
   partials: [Partials.Channel]
 });
+
+client.commands = new Collection();
 
 const statuses = [
   { name: 'en ligne et prêt à fonctionner.', type: ActivityType.Playing },
@@ -108,6 +111,19 @@ function choisirCoupBot() {
     .filter(val => val !== null);
 
   return coupsLibres[Math.floor(Math.random() * coupsLibres.length)];
+}
+
+const fs = require('node:fs');
+const path = require('node:path');
+
+client.commands = new Collection();
+
+const commandsPath = path.join(__dirname, 'commands');
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+  const command = require(path.join(commandsPath, file));
+  client.commands.set(command.data.name, command);
 }
 
 client.once('ready', async () => {
