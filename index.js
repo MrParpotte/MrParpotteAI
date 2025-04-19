@@ -539,6 +539,31 @@ client.on('messageCreate', message => {
     const gagnant = Math.random() < 0.5 ? message.author : opponent;
     message.channel.send(`⚔️ ${message.author} défie ${opponent}... et le gagnant est **${gagnant}** !`);
   }
+
+  if (message.content.startsWith('?8ball')) {
+    const question = message.content.slice(6).trim();
+
+    if (!question) {
+        return message.reply("Tu dois poser une question pour que je puisse y répondre !");
+    }
+
+    const réponses = [
+        "Oui, clairement.",
+        "Non, sûrement pas.",
+        "Peut-être bien que oui, peut-être bien que non...",
+        "Je ne pense pas.",
+        "C’est certain.",
+        "Demande plus tard.",
+        "J’ai des doutes.",
+        "Absolument !",
+        "Nope.",
+        "Tu connais déjà la réponse."
+    ];
+
+    const aléatoire = réponses[Math.floor(Math.random() * réponses.length)];
+    return message.reply(`🎱 ${aléatoire}`);
+}
+
 });
 
 setInterval(() => console.log('✅ RESET EN COURS...'), 60_000);
