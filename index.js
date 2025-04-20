@@ -37,7 +37,7 @@ const statuses = [
   { name: 'en ligne et prêt à fonctionner.', type: ActivityType.Playing },
   { name: 'les vidéos de MrParpotte', type: ActivityType.Watching },
   { name: 'aider les utilisateurs est ma mission.', type: ActivityType.Playing },
-  { name: '?help pour commencer', type: ActivityType.Playing },
+  { name: '/help pour commencer', type: ActivityType.Playing },
   { name: 'connecté, toujours disponible pour aider.', type: ActivityType.Playing },
   { name: 'sécurisation en cours... Je garde tout sous contrôle.', type: ActivityType.Watching },
   { name: 'maintenance en cours... mais je suis toujours là.', type: ActivityType.Playing },
