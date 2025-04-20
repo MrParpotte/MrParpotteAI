@@ -21,6 +21,6 @@ module.exports = {
       .setFooter({ text: 'Utilise les commandes dans un canal autorisé.' })
       .setTimestamp();
 
-    await interaction.reply({ embeds: [embed], ephemeral: true }); // réponse privée
+    await interaction.reply({ embeds: [embed] }); // Réponse visible par tous
   },
 };
