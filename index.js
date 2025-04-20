@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const {
   Client,
   GatewayIntentBits,
@@ -6,10 +8,12 @@ const {
   ButtonBuilder,
   ButtonStyle,
   EmbedBuilder,
-  ActivityType
+  ActivityType,
+  Collection
 } = require('discord.js');
 
-require('dotenv').config();
+const fs = require('node:fs');
+const path = require('node:path');
 
 const client = new Client({
   intents: [
@@ -19,6 +23,15 @@ const client = new Client({
   ],
   partials: [Partials.Channel]
 });
+client.commands = new Collection();
+
+const commandsPath = path.join(__dirname, 'commands');
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+  const command = require(path.join(commandsPath, file));
+  client.commands.set(command.data.name, command);
+}
 
 const statuses = [
   { name: 'en ligne et prêt à fonctionner.', type: ActivityType.Playing },
@@ -130,6 +143,20 @@ client.once('ready', async () => {
 
   updateStatus();
   setInterval(updateStatus, 15 * 1000);
+});
+
+client.on('interactionCreate', async interaction => {
+  if (!interaction.isChatInputCommand()) return;
+
+  const command = client.commands.get(interaction.commandName);
+  if (!command) return;
+
+  try {
+    await command.execute(interaction);
+  } catch (error) {
+    console.error(error);
+    await interaction.reply({ content: '❌ Une erreur est survenue.', ephemeral: true });
+  }
 });
 
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
@@ -543,25 +570,25 @@ client.on('messageCreate', message => {
     const question = message.content.slice(6).trim();
 
     if (!question) {
-        return message.reply("Tu dois poser une question pour que je puisse y répondre !");
+      return message.reply("Tu dois poser une question pour que je puisse y répondre !");
     }
 
     const réponses = [
-        "Oui, clairement.",
-        "Non, sûrement pas.",
-        "Peut-être bien que oui, peut-être bien que non...",
-        "Je ne pense pas.",
-        "C’est certain.",
-        "Demande plus tard.",
-        "J’ai des doutes.",
-        "Absolument !",
-        "Nope.",
-        "Tu connais déjà la réponse."
+      "Oui, clairement.",
+      "Non, sûrement pas.",
+      "Peut-être bien que oui, peut-être bien que non...",
+      "Je ne pense pas.",
+      "C’est certain.",
+      "Demande plus tard.",
+      "J’ai des doutes.",
+      "Absolument !",
+      "Nope.",
+      "Tu connais déjà la réponse."
     ];
 
     const aléatoire = réponses[Math.floor(Math.random() * réponses.length)];
     return message.reply(`🎱 ${aléatoire}`);
-}
+  }
 
 });
 
