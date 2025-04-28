@@ -12,6 +12,9 @@ const {
   AutoModerationRuleTriggerType,
   AutoModerationActionType,
   Collection,
+  TextInputBuilder,
+  TextInputStyle,
+  ModalBuilder,
   PermissionFlagsBits
 } = require('discord.js');
 
@@ -136,47 +139,42 @@ client.once('ready', async () => {
 
   console.log(`✅ ${client.user.tag} est prêt et en ligne !`);
 
-  const guild = client.guilds.cache.get('1281283774864429117'); // Remplace par l'ID de ton serveur
+  const guild = client.guilds.cache.get('1281283774864429117');
 
-  if (!guild) {
-    console.error('❌ Impossible de trouver le serveur.');
+  if (!guild) return console.error('❌ Serveur non trouvé !');
+
+  const automodRules = await guild.autoModerationRules.fetch();
+
+  const existingRule = automodRules.find(rule => rule.name === 'Bloquer les liens d\'invitation Discord');
+
+  if (existingRule) {
+    console.log('✅ La règle existe déjà.');
     return;
   }
 
-  try {
-    const rules = await guild.autoModerationRules.fetch();
-    const alreadyExists = rules.some(rule => rule.name === 'Bloqueur d\'invites Discord');
-
-    if (alreadyExists) {
-      console.log('⚠️ La règle AutoMod existe déjà.');
-      return;
-    }
-
-    await guild.autoModerationRules.create({
-      name: 'Bloqueur d\'invites Discord',
-      creatorId: client.user.id,
-      enabled: true,
-      eventType: 1, // MESSAGE_SEND
-      triggerType: AutoModerationRuleTriggerType.Keyword,
-      triggerMetadata: {
-        keywordFilter: ['discord.gg', 'discord.com/invite'], // Mots-clés à bloquer
-      },
-      actions: [
-        {
-          type: AutoModerationActionType.BlockMessage,
-          metadata: {
-            customMessage: '🚫 Les liens d\'invitations Discord sont interdits ici !',
-          },
+  await guild.autoModerationRules.create({
+    name: 'Bloquer les liens d\'invitation Discord',
+    creatorId: client.user.id,
+    enabled: true,
+    eventType: 1, // MESSAGE_SEND
+    triggerType: 1, // KEYWORD
+    triggerMetadata: {
+      keywordFilter: ['discord.gg/', 'discord.com/invite/'],
+    },
+    actions: [
+      {
+        type: 1, // BlockMessage
+        metadata: {
+          customMessage: '🚫 Les liens d\'invitation Discord ne sont pas autorisés ici !',
         },
-      ],
-      exemptRoles: ['1281643520314052679', '1281643526123425873', '1281643527117213891', '1281643528996257836', '1281643528350466108'], // Tu peux ajouter des rôles ici si tu veux exempter des gens
-      exemptChannels: ['1281644626297491568', '1281644588196696146', '1281643876636954634'], // Ou ici pour certains salons
-    });
+      },
+    ],
+    exemptRoles: ['1281643520314052679', '1281643526123425873', '1281643527117213891', '1281643528996257836', '1281643528350466108'], // IDs des rôles exempts ici
+    exemptChannels: ['1281644626297491568', '1281644588196696146', '1281643876636954634'], // IDs des salons exempts ici
+    reason: 'Protection contre le spam de liens Discord',
+  });
 
-    console.log('✅ Règle AutoMod créée avec succès.');
-  } catch (error) {
-    console.error('❌ Erreur lors de la création de la règle AutoMod:', error);
-  }
+  console.log('✅ Règle Anti-Invitation Discord créée avec succès !');
 
   const updateStatus = () => {
     const random = statuses[Math.floor(Math.random() * statuses.length)];
