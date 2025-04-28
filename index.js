@@ -562,3 +562,5 @@ setInterval(() => console.log('✅ RESET EN COURS...'), 60_000);
 const db = require('./database');
 
 client.login(process.env.DISCORD_TOKEN);
+
+process.stdin.resume();
