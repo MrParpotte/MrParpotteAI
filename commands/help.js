@@ -14,7 +14,6 @@ module.exports = {
         { name: '🎉 Communauté', value: '`?blague`, `?sondage`, `?motivation`' },
         { name: '🎮 Jeux & Mini-jeux', value: '`?roulette`, `?dé`, `?duel`, `?morpion`, `?devine`, `?8ball`' },
         { name: '📈 Classement', value: '`?top`, `?me`' },
-        { name: '📺 YouTube', value: '`?vidéo`' },
         { name: '🧠 Utilitaire', value: '`/ping`' },
         { name: 'ℹ️ Infos', value: '`?about`, `?serveur`, `/help`' },
       )

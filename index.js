@@ -9,13 +9,7 @@ const {
   ButtonStyle,
   EmbedBuilder,
   ActivityType,
-  AutoModerationRuleTriggerType,
-  AutoModerationActionType,
-  Collection,
-  TextInputBuilder,
-  TextInputStyle,
-  ModalBuilder,
-  PermissionFlagsBits
+  Collection
 } = require('discord.js');
 
 const fs = require('node:fs');
@@ -139,43 +133,6 @@ client.once('ready', async () => {
 
   console.log(`✅ ${client.user.tag} est prêt et en ligne !`);
 
-  const guild = client.guilds.cache.get('1281283774864429117');
-
-  if (!guild) return console.error('❌ Serveur non trouvé !');
-
-  const automodRules = await guild.autoModerationRules.fetch();
-
-  const existingRule = automodRules.find(rule => rule.name === 'Bloquer les liens d\'invitation Discord');
-
-  if (existingRule) {
-    console.log('✅ La règle existe déjà.');
-    return;
-  }
-
-  await guild.autoModerationRules.create({
-    name: 'Bloquer les liens d\'invitation Discord',
-    creatorId: client.user.id,
-    enabled: true,
-    eventType: 1, // MESSAGE_SEND
-    triggerType: 1, // KEYWORD
-    triggerMetadata: {
-      keywordFilter: ['discord.gg/', 'discord.com/invite/'],
-    },
-    actions: [
-      {
-        type: 1, // BlockMessage
-        metadata: {
-          customMessage: '🚫 Les liens d\'invitation Discord ne sont pas autorisés ici !',
-        },
-      },
-    ],
-    exemptRoles: ['1281643520314052679', '1281643526123425873', '1281643527117213891', '1281643528996257836', '1281643528350466108'], // IDs des rôles exempts ici
-    exemptChannels: ['1281644626297491568', '1281644588196696146', '1281643876636954634'], // IDs des salons exempts ici
-    reason: 'Protection contre le spam de liens Discord',
-  });
-
-  console.log('✅ Règle Anti-Invitation Discord créée avec succès !');
-
   const updateStatus = () => {
     const random = statuses[Math.floor(Math.random() * statuses.length)];
     client.user.setPresence({
@@ -186,62 +143,6 @@ client.once('ready', async () => {
 
   updateStatus();
   setInterval(updateStatus, 15 * 1000);
-});
-
-client.on('interactionCreate', async interaction => {
-  if (!interaction.isChatInputCommand()) return;
-
-  const command = client.commands.get(interaction.commandName);
-  if (!command) return;
-
-  try {
-    await command.execute(interaction);
-  } catch (error) {
-    console.error(error);
-    await interaction.reply({ content: '❌ Une erreur est survenue.', ephemeral: true });
-  }
-});
-
-const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
-
-const YOUTUBE_API_KEY = 'AIzaSyDedguLTn2KjSImbkocRBPyYpZdn88u4A0';
-const CHANNEL_ID = 'UCm0m1Vm8QL-l3Z6mZUe8vCg';
-
-client.on('messageCreate', async message => {
-  if (message.content === '?vidéo') {
-    try {
-      const url = `https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&channelId=${CHANNEL_ID}&part=snippet&order=date&maxResults=1&type=video`;
-      const response = await fetch(url);
-      const data = await response.json();
-
-      if (!data.items || data.items.length === 0) {
-        return message.channel.send("❌ Impossible de trouver les vidéos de la chaîne.");
-      }
-
-      const video = data.items[0];
-      const videoId = video.id.videoId;
-      const title = video.snippet.title;
-      const description = video.snippet.description;
-      const thumbnail = video.snippet.thumbnails.high.url;
-      const publishedAt = video.snippet.publishedAt;
-      const link = `https://www.youtube.com/watch?v=${videoId}`;
-
-      const embed = {
-        color: 0xff0000,
-        title: `🎬 Nouvelle vidéo de MrParpotte !`,
-        description: `**${title}**\n[Regarder sur YouTube](${link})`,
-        image: { url: thumbnail },
-        footer: { text: `Publiée le ${new Date(publishedAt).toLocaleDateString('fr-FR')}` },
-        timestamp: new Date(publishedAt)
-      };
-
-      message.channel.send({ embeds: [embed] });
-
-    } catch (err) {
-      console.error("Erreur lors de la récupération de la vidéo :", err);
-      message.channel.send("❌ Une erreur est survenue en récupérant la vidéo.");
-    }
-  }
 });
 
 client.on('messageCreate', async message => {
