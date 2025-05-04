@@ -9,13 +9,7 @@ const {
   ButtonStyle,
   EmbedBuilder,
   ActivityType,
-  Collection,
-  TextInputBuilder,
-  TextInputStyle,
-  ModalBuilder,
-  PermissionFlagsBits,
-  AutoModerationRuleTriggerType,
-  AutoModerationActionType
+  Collection
 } = require('discord.js');
 
 const fs = require('node:fs');
