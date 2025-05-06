@@ -19,9 +19,11 @@ const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.GuildMembers,
     GatewayIntentBits.MessageContent
   ],
-  partials: [Partials.Channel]
+  partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 client.commands = new Collection();
 
@@ -255,6 +257,123 @@ client.on('messageCreate', async (message) => {
     });
   }
 });
+
+client.on('ready', async () => {
+  const channel = client.channels.cache.get('1365972512613208106'); // Remplace par l'ID du salon
+  const message = await channel.send('Réagis pour obtenir un rôle :\n⚜️ = Or\n🦩 = Rose\n🟡 = Jaune\n🍫 = Chocolat\n🌊 = Aqua\n🍏 = Vert\n🩶 = Argent\n🍅 = Rouge\n🔵 = Bleu');
+  await message.react('⚜️'); // 1
+  await message.react('🦩'); // 2
+  await message.react('🟡'); // 3
+  await message.react('🍫'); // 4
+  await message.react('🌊'); // 5
+  await message.react('🍏'); // 6
+  await message.react('🩶'); // 7
+  await message.react('🍅'); // 8
+  await message.react('🔵'); // 9
+});
+
+client.on('messageReactionAdd', async (reaction, user) => {
+  if (user.bot) return;
+
+  const guild = reaction.message.guild;
+  const member = await guild.members.fetch(user.id);
+
+  if (reaction.emoji.name === '⚜️') {
+    const role = guild.roles.cache.find(r => r.name === '⚜️・Or');
+    if (role) await member.roles.add(role);
+  }
+
+  if (reaction.emoji.name === '🦩') {
+    const role = guild.roles.cache.find(r => r.name === '🦩・Rose');
+    if (role) await member.roles.add(role);
+  }
+
+  if (reaction.emoji.name === '🟡') {
+    const role = guild.roles.cache.find(r => r.name === '🟡・Jaune');
+    if (role) await member.roles.add(role);
+  }
+
+  if (reaction.emoji.name === '🍫') {
+    const role = guild.roles.cache.find(r => r.name === '🍫・Chocolat');
+    if (role) await member.roles.add(role);
+  }
+
+  if (reaction.emoji.name === '🌊') {
+    const role = guild.roles.cache.find(r => r.name === '🌊・Aqua');
+    if (role) await member.roles.add(role);
+  }
+
+  if (reaction.emoji.name === '🍏') {
+    const role = guild.roles.cache.find(r => r.name === '🍏・Vert');
+    if (role) await member.roles.add(role);
+  }
+
+  if (reaction.emoji.name === '🩶') {
+    const role = guild.roles.cache.find(r => r.name === '🩶・Argent');
+    if (role) await member.roles.add(role);
+  }
+
+  if (reaction.emoji.name === '🍅') {
+    const role = guild.roles.cache.find(r => r.name === '🍅・Rouge');
+    if (role) await member.roles.add(role);
+  }
+
+  if (reaction.emoji.name === '🔵') {
+    const role = guild.roles.cache.find(r => r.name === '🔵・Bleu');
+    if (role) await member.roles.add(role);
+  }
+});
+
+client.on('messageReactionRemove', async (reaction, user) => {
+  if (user.bot || !reaction.message.guild) return;
+  const member = await reaction.message.guild.members.fetch(user.id);
+
+  if (reaction.emoji.name === '⚜️') {
+    const role = reaction.message.guild.roles.cache.find(r => r.name === '⚜️・Or');
+    if (role) await member.roles.remove(role);
+  }
+
+  if (reaction.emoji.name === '🦩') {
+    const role = reaction.message.guild.roles.cache.find(r => r.name === '🦩・Rose');
+    if (role) await member.roles.remove(role);
+  }
+
+  if (reaction.emoji.name === '🟡') {
+    const role = reaction.message.guild.roles.cache.find(r => r.name === '🟡・Jaune');
+    if (role) await member.roles.remove(role);
+  }
+
+  if (reaction.emoji.name === '🍫') {
+    const role = reaction.message.guild.roles.cache.find(r => r.name === '🍫・Chocolat');
+    if (role) await member.roles.remove(role);
+  }
+
+  if (reaction.emoji.name === '🌊') {
+    const role = reaction.message.guild.roles.cache.find(r => r.name === '🌊・Aqua');
+    if (role) await member.roles.remove(role);
+  }
+
+  if (reaction.emoji.name === '🍏') {
+    const role = reaction.message.guild.roles.cache.find(r => r.name === '🍏・Vert');
+    if (role) await member.roles.remove(role);
+  }
+
+  if (reaction.emoji.name === '🩶') {
+    const role = reaction.message.guild.roles.cache.find(r => r.name === '🩶・Argent');
+    if (role) await member.roles.remove(role);
+  }
+
+  if (reaction.emoji.name === '🍅') {
+    const role = reaction.message.guild.roles.cache.find(r => r.name === '🍅・Rouge');
+    if (role) await member.roles.remove(role);
+  }
+
+  if (reaction.emoji.name === '🔵') {
+    const role = reaction.message.guild.roles.cache.find(r => r.name === '🔵・Bleu');
+    if (role) await member.roles.remove(role);
+  }
+});
+
 
 client.on('messageCreate', message => {
   if (message.author.bot) return;
