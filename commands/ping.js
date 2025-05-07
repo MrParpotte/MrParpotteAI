@@ -23,7 +23,9 @@ module.exports = {
       timestamp: new Date()
     };
 
-    await interaction.reply({ embeds: [embed], fetchReply: true });
+    const reply = await interaction.reply({ embeds: [embed] });
+    // récupère la réponse (comme fetchReply)
+    const message = await interaction.fetchReply();
 
     const interval = setInterval(async () => {
       percent += 10;
