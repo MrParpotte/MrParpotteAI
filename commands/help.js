@@ -11,7 +11,7 @@ module.exports = {
       .setTitle('📖 Aide de MrParpotte AI')
       .setDescription('Voici la liste des commandes disponibles :')
       .addFields(
-        { name: '🎉 Communauté', value: '`?blague`, `?sondage`, `?motivation`' },
+        { name: '🎉 Communauté', value: '`/blague`, `?sondage`, `?motivation`' },
         { name: '🎮 Jeux & Mini-jeux', value: '`?roulette`, `?dé`, `?duel`, `?morpion`, `?devine`, `?8ball`' },
         { name: '📈 Classement', value: '`?top`, `?me`' },
         { name: '🧠 Utilitaire', value: '`/ping`' },
