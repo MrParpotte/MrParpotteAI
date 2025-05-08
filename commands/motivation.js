@@ -1,57 +1,52 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const https = require('https');
 
-function getMotivationalQuote() {
-    const url = 'https://zenquotes.io/api/random';
+const citations = [
+    "🌟 Crois en toi, toujours.",
+    "🚀 Chaque jour est une nouvelle chance de briller.",
+    "🔥 L’échec est simplement l’opportunité de recommencer, mais de manière plus intelligente.",
+    "💪 Ne laisse jamais les peurs décider de ton avenir.",
+    "✨ L'avenir appartient à ceux qui croient à la beauté de leurs rêves.",
+    "🌱 Commence où tu es, utilise ce que tu as, fais ce que tu peux.",
+    "🌞 Chaque petit pas te rapproche de ton objectif.",
+    "🏆 Le succès ne vient pas à toi, tu dois aller à lui.",
+    "🎯 La seule façon d’échouer, c’est de ne jamais essayer.",
+    "🔥 Ton potentiel est illimité, ne te limite pas.",
+    "🌟 Les grandes choses ne viennent jamais d'une zone de confort.",
+    "🚀 Le seul obstacle à ton succès, c’est toi-même.",
+    "💡 Tu es plus fort que tu ne le penses, et plus proche de ton but que tu ne l'imagines.",
+    "🌈 Ne laisse jamais les doutes t'arrêter, continue d'avancer.",
+    "🎉 Le bonheur n'est pas quelque chose de prêt à l'emploi, il vient de tes propres actions.",
+    "💥 N'abandonne pas. Chaque échec est une étape vers le succès."
+];
 
-    return new Promise((resolve, reject) => {
-        https.get(url, res => {
-            let data = '';
-
-            res.on('data', chunk => {
-                data += chunk;
-            });
-
-            res.on('end', () => {
-                try {
-                    const [quote] = JSON.parse(data);
-                    resolve(quote);
-                } catch (err) {
-                    reject(err);
-                }
-            });
-        }).on('error', reject);
-    });
+function getRandomQuote() {
+    return citations[Math.floor(Math.random() * citations.length)];
 }
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('motivation')
-        .setDescription('Reçois une citation motivante depuis ZenQuotes API ✨'),
+        .setDescription('Reçois une citation motivante ✨'),
 
     async execute(interaction) {
-        try {
-            const quote = await getMotivationalQuote();
+        const quote = getRandomQuote();
 
-            const embed = new EmbedBuilder()
-                .setColor(0x00bfff)
-                .setTitle('💬 Citation Motivante')
-                .setDescription(`*"${quote.q}"*`)
-                .setFooter({ text: `— ${quote.a}` })
-                .setTimestamp();
+        const embed = new EmbedBuilder()
+            .setColor(0xfcc203)
+            .setTitle('💬 Citation Motivante')
+            .setDescription(quote)
+            .setTimestamp();
 
-            const button = new ButtonBuilder()
-                .setCustomId('refresh_motivation')
-                .setLabel('🔁 Une autre !')
-                .setStyle(ButtonStyle.Primary);
+        const button = new ButtonBuilder()
+            .setCustomId('new_motivation')
+            .setLabel('🔁 Une autre !')
+            .setStyle(ButtonStyle.Primary);
 
-            const row = new ActionRowBuilder().addComponents(button);
+        const row = new ActionRowBuilder().addComponents(button);
 
-            await interaction.reply({ embeds: [embed], components: [row] });
+        await interaction.reply({ embeds: [embed], components: [row] });
+    },
 
-        } catch (error) {
-            console.error(error);
-            await interaction.reply('❌ Une erreur est survenue en récupérant une citation.');
-        }
-    }
+    // Export aussi la fonction si nécessaire pour ailleurs :
+    getRandomQuote
 };

@@ -388,25 +388,29 @@ client.on('messageReactionRemove', async (reaction, user) => {
   }
 });
 
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { getRandomQuote } = require('./commands/motivation');
+
 client.on('interactionCreate', async interaction => {
   if (!interaction.isButton()) return;
 
-  if (interaction.customId === 'refresh_motivation') {
-    try {
-      const quote = await getMotivationalQuote(); // réutilise la même fonction que ci-dessus
+  if (interaction.customId === 'new_motivation') {
+    const quote = getRandomQuote();
 
-      const embed = new EmbedBuilder()
-        .setColor(0x00bfff)
-        .setTitle('💬 Citation Motivante')
-        .setDescription(`*"${quote.q}"*`)
-        .setFooter({ text: `— ${quote.a}` })
-        .setTimestamp();
+    const embed = new EmbedBuilder()
+      .setColor(0xfcc203)
+      .setTitle('💬 Citation Motivante')
+      .setDescription(quote)
+      .setTimestamp();
 
-      await interaction.update({ embeds: [embed] }); // remplace le message
-    } catch (err) {
-      console.error(err);
-      await interaction.reply({ content: '❌ Impossible de rafraîchir la citation.', ephemeral: true });
-    }
+    const button = new ButtonBuilder()
+      .setCustomId('new_motivation')
+      .setLabel('🔁 Une autre !')
+      .setStyle(ButtonStyle.Primary);
+
+    const row = new ActionRowBuilder().addComponents(button);
+
+    await interaction.update({ embeds: [embed], components: [row] });
   }
 });
 
@@ -488,31 +492,6 @@ client.on('messageCreate', message => {
   if (content === '?serveur') {
     message.channel.send("🛡️ **Bienvenue sur le serveur officiel de MrParpotte !**\nIci, c’est fun, chill et 100% communauté. Participe aux events, échange avec d’autres fans et profite des nouveautés en avant-première !\n🎉 #MrParpotte");
   }
-
-  if (content === '?motivation') {
-    const citations = [
-      "🌟 Crois en toi, toujours.",
-      "🚀 Chaque jour est une nouvelle chance de briller.",
-      "🔥 L’échec est simplement l’opportunité de recommencer, mais de manière plus intelligente.",
-      "💪 Ne laisse jamais les peurs décider de ton avenir.",
-      "✨ L'avenir appartient à ceux qui croient à la beauté de leurs rêves.",
-      "🌱 Commence où tu es, utilise ce que tu as, fais ce que tu peux.",
-      "🌞 Chaque petit pas te rapproche de ton objectif.",
-      "🏆 Le succès ne vient pas à toi, tu dois aller à lui.",
-      "🎯 La seule façon d’échouer, c’est de ne jamais essayer.",
-      "🔥 Ton potentiel est illimité, ne te limite pas.",
-      "🌟 Les grandes choses ne viennent jamais d'une zone de confort.",
-      "🚀 Le seul obstacle à ton succès, c’est toi-même.",
-      "💡 Tu es plus fort que tu ne le penses, et plus proche de ton but que tu ne l'imagines.",
-      "🌈 Ne laisse jamais les doutes t'arrêter, continue d'avancer.",
-      "🎉 Le bonheur n'est pas quelque chose de prêt à l'emploi, il vient de tes propres actions.",
-      "💥 N'abandonne pas. Chaque échec est une étape vers le succès."
-    ];
-
-    const random = citations[Math.floor(Math.random() * citations.length)];
-    message.channel.send(random);
-  }
-
 
   if (content.startsWith('?sondage')) {
     const question = message.content.slice(9).trim();
