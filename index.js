@@ -388,7 +388,6 @@ client.on('messageReactionRemove', async (reaction, user) => {
   }
 });
 
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { getRandomQuote } = require('./commands/motivation');
 
 client.on('interactionCreate', async interaction => {
