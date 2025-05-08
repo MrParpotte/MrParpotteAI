@@ -388,28 +388,36 @@ client.on('messageReactionRemove', async (reaction, user) => {
   }
 });
 
-const { getRandomQuote } = require('./commands/motivation');
-
 client.on('interactionCreate', async interaction => {
   if (!interaction.isButton()) return;
 
-  if (interaction.customId === 'new_motivation') {
-    const quote = getRandomQuote();
+  if (interaction.customId === 'autre_citation') {
+    await interaction.deferUpdate(); // ✅ évite les erreurs "Unknown interaction"
+
+    const citations = [
+      "🌟 Crois en toi, toujours.",
+      "🚀 Chaque jour est une nouvelle chance de briller.",
+      "🔥 L’échec est simplement l’opportunité de recommencer, mais de manière plus intelligente.",
+      // ... etc.
+    ];
+
+    const random = citations[Math.floor(Math.random() * citations.length)];
 
     const embed = new EmbedBuilder()
-      .setColor(0xfcc203)
-      .setTitle('💬 Citation Motivante')
-      .setDescription(quote)
+      .setColor(0xff9900)
+      .setTitle('💬 Nouvelle Citation')
+      .setDescription(random)
       .setTimestamp();
 
-    const button = new ButtonBuilder()
-      .setCustomId('new_motivation')
-      .setLabel('🔁 Une autre !')
-      .setStyle(ButtonStyle.Primary);
+    const row = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId('autre_citation')
+        .setLabel('🔁 Une autre !')
+        .setStyle(ButtonStyle.Primary)
+    );
 
-    const row = new ActionRowBuilder().addComponents(button);
-
-    await interaction.update({ embeds: [embed], components: [row] });
+    // Edit le message précédent avec la nouvelle citation
+    await interaction.editReply({ embeds: [embed], components: [row] });
   }
 });
 
