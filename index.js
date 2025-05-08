@@ -588,7 +588,7 @@ client.on('messageCreate', message => {
 
 });
 
-setInterval(() => console.log('✅ RESET EN COURS...'), 60_000);
+setInterval(() => console.log(`✅ ${client.user.tag} REDEMARRAGE...`), 60_000);
 
 const db = require('./database');
 
