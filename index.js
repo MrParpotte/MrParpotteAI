@@ -388,6 +388,27 @@ client.on('messageReactionRemove', async (reaction, user) => {
   }
 });
 
+client.on('interactionCreate', async interaction => {
+  if (!interaction.isButton()) return;
+
+  if (interaction.customId === 'refresh_motivation') {
+    try {
+      const quote = await getMotivationalQuote(); // réutilise la même fonction que ci-dessus
+
+      const embed = new EmbedBuilder()
+        .setColor(0x00bfff)
+        .setTitle('💬 Citation Motivante')
+        .setDescription(`*"${quote.q}"*`)
+        .setFooter({ text: `— ${quote.a}` })
+        .setTimestamp();
+
+      await interaction.update({ embeds: [embed] }); // remplace le message
+    } catch (err) {
+      console.error(err);
+      await interaction.reply({ content: '❌ Impossible de rafraîchir la citation.', ephemeral: true });
+    }
+  }
+});
 
 client.on('messageCreate', message => {
   if (message.author.bot) return;
